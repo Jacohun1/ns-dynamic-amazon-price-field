@@ -57,11 +57,6 @@ define ( ['N/record', 'N/ui/serverWidget'] ,
                 });
             }
 
-            //Update the custom field on the item record to match the online price. Make sure it is a number record and has 2 decimal places.
-            newRecord.setValue({
-                fieldId: 'custitem_onlineprice_for_schema',
-                value: `${Number(newItemOnlinePrice).toFixed(2)}`
-            });
         }
         //Return the before submit statement
         return {
