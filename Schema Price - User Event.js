@@ -53,7 +53,7 @@ define ( ['N/record', 'N/ui/serverWidget'] ,
             } else {
                 newRecord.setValue({
                     fieldId: 'custitem_dynamic_amazon_price',
-                    value: `${Number((newItemOnlinePrice * .012) + newItemOnlinePrice).toFixed(2)}`
+                    value: `${Number((newItemOnlinePrice * .12) + newItemOnlinePrice).toFixed(2)}`
                 });
             }
 
