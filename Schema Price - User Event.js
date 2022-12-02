@@ -22,6 +22,11 @@ define ( ['N/record', 'N/ui/serverWidget'] ,
                 value: '5'
             })
 
+            //See who the manufacturer in NS is.
+            const itemManufacturer = newRecord.getValue({
+                fieldId: 'manufacturer'
+            });
+
             //get the online price that is about to be submitted
             const newItemOnlinePrice = newRecord.getSublistValue({
                 sublistId: "price",
@@ -39,6 +44,18 @@ define ( ['N/record', 'N/ui/serverWidget'] ,
             //If there is no change to the online price the script should be done
             if (oldItemOnlinePrice === newItemOnlinePrice)
                 return;
+
+            if (itemManufacturer.toLowerCase() === "sagola") {
+                newRecord.setValue({
+                    fieldId: 'custitem_dynamic_amazon_price',
+                    value: `${Number(newItemOnlinePrice).toFixed(2)}`
+                });
+            } else {
+                newRecord.setValue({
+                    fieldId: 'custitem_dynamic_amazon_price',
+                    value: `${Number((newItemOnlinePrice * .012) + newItemOnlinePrice).toFixed(2)}`
+                });
+            }
 
             //Update the custom field on the item record to match the online price. Make sure it is a number record and has 2 decimal places.
             newRecord.setValue({
