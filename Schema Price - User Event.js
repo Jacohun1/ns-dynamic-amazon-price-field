@@ -15,6 +15,20 @@ define ( ['N/record', 'N/ui/serverWidget'] ,
             const newRecord = context.newRecord;
             const oldRecord = context.oldRecord;
 
+            //Check if product status will be sent to amazon
+            const newAmazonFlag = newRecord.getValue({
+                fieldId: 'custitem_nsc_amazon_flag'
+            });
+   
+            //Check if product status was being sent to amazon
+            const oldAmazonFlag = oldRecord.getValue({
+                fieldId: 'custitem_nsc_amazon_flag'
+            });
+     
+            const newAmazonPrice = newRecord.getValue({
+                fieldId: 'custitem_dynamic_amazon_price'
+            });
+            
             //Pull the line value of the price level with the Id of 5 (Our Online Price Level).
             const pricingSublistLineLevel = newRecord.findSublistLineWithValue({
                 sublistId: "price",
@@ -41,10 +55,15 @@ define ( ['N/record', 'N/ui/serverWidget'] ,
                 line: pricingSublistLineLevel
             });
 
-            //If there is no change to the online price the script should be done
-            if (oldItemOnlinePrice === newItemOnlinePrice)
+            //Return if product is not being sent to Amazon
+            if (newAmazonFlag !== "Add/Update Item")
                 return;
-
+             
+            //If there is no change to the online price the script should be done
+            if (Number(newItemOnlinePrice).toFixed(2) === newAmazonPrice || Number((newItemOnlinePrice * .12) + newItemOnlinePrice).toFixed(2) === newAmazonPrice)
+                return;
+         
+            //See if the manufacturer is Sagola and if not upmark the product by 12%
             if (itemManufacturer.toLowerCase() === "sagola") {
                 newRecord.setValue({
                     fieldId: 'custitem_dynamic_amazon_price',
