@@ -11,16 +11,18 @@ define ( ['N/record', 'N/ui/serverWidget'] ,
  
         // In the beforeSubmit function, add new price to Schema custom field on inv & non-inv item records.
         myBeforeSubmit = (context) => {
+            if (context.type !== context.UserEventType.CREATE)
+            return;
             //Simplify Code - remove context.
             const newRecord = context.newRecord;
             const oldRecord = context.oldRecord;
 
             //Pull the line value of the price level with the Id of 5 (Our Online Price Level).
             const pricingSublistLineLevel = newRecord.findSublistLineWithValue({
-                sublistId: 'price',
+                sublistId: "price",
                 fieldId: 'pricelevel', //The Id of the sublist values
                 value: '5'
-            });
+            })
 
             //See who the manufacturer in NS is.
             const itemManufacturer = newRecord.getValue({
@@ -39,15 +41,15 @@ define ( ['N/record', 'N/ui/serverWidget'] ,
 
             //get the online price that is about to be submitted
             const newItemOnlinePrice = newRecord.getSublistValue({
-                sublistId: 'price',
-                fieldId: 'price_1_',
+                sublistId: "price",
+                fieldId: "price_1_",
                 line: pricingSublistLineLevel
             });
 
             //get the online price that was on the record prior
             const oldItemOnlinePrice = oldRecord.getSublistValue({
-                sublistId: 'price',
-                fieldId: 'price_1_',
+                sublistId: "price",
+                fieldId: "price_1_",
                 line: pricingSublistLineLevel
             });
 
@@ -55,8 +57,7 @@ define ( ['N/record', 'N/ui/serverWidget'] ,
             if (oldItemOnlinePrice === newItemOnlinePrice && newAmazonFlag === oldAmazonFlag)
                 return;
 
-            //Check if product is being sent to Amazon via the netsuite connector. If it isn't set amazon price to 0 and end script
-            if (newAmazonFlag != '1') {
+            if (newAmazonFlag != "1") {
                 newRecord.setValue({
                     fieldId: 'custitem_dynamic_amazon_price',
                     value: ''
@@ -64,8 +65,7 @@ define ( ['N/record', 'N/ui/serverWidget'] ,
                 return;
             }
 
-            //See if manufacturer is Sagola, if so set price to online price and if not add an additional 12% markup
-            if (itemManufacturer.toLowerCase() === 'sagola') {
+            if (itemManufacturer.toLowerCase() === "sagola") {
                 newRecord.setValue({
                     fieldId: 'custitem_dynamic_amazon_price',
                     value: `${Number(newItemOnlinePrice).toFixed(2)}`
