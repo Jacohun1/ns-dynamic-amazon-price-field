@@ -11,7 +11,7 @@ define ( ['N/record', 'N/ui/serverWidget'] ,
  
         // In the beforeSubmit function, add new price to Schema custom field on inv & non-inv item records.
         myBeforeSubmit = (context) => {
-            if (context.type !== context.UserEventType.CREATE)
+            if (context.type == context.UserEventType.CREATE)
             return;
             //Simplify Code - remove context.
             const newRecord = context.newRecord;
