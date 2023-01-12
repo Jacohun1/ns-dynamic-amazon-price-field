@@ -11,8 +11,6 @@ define ( ['N/record', 'N/ui/serverWidget'] ,
  
         // In the beforeSubmit function, add new price to Schema custom field on inv & non-inv item records.
         myBeforeSubmit = (context) => {
-            if (context.type == context.UserEventType.CREATE)
-            return;
             //Simplify Code - remove context.
             const newRecord = context.newRecord;
             const oldRecord = context.oldRecord;
@@ -33,17 +31,34 @@ define ( ['N/record', 'N/ui/serverWidget'] ,
             const newAmazonFlag = newRecord.getValue({
                 fieldId: 'custitem_nsc_amazon_flag'
             });
-
-            //Is item going to be part of NS connector?
-            const oldAmazonFlag = oldRecord.getValue({
-                fieldId: 'custitem_nsc_amazon_flag'
-            });
-
+    
             //get the online price that is about to be submitted
             const newItemOnlinePrice = newRecord.getSublistValue({
                 sublistId: "price",
                 fieldId: "price_1_",
                 line: pricingSublistLineLevel
+            });
+
+            //Account for new items being created
+            if (context.type == context.UserEventType.CREATE){
+                if (itemManufacturer.toLowerCase() === "sagola") {
+                    newRecord.setValue({
+                        fieldId: 'custitem_dynamic_amazon_price',
+                        value: `${Number(newItemOnlinePrice).toFixed(2)}`
+                    });
+                    return;
+                } else {
+                    newRecord.setValue({
+                        fieldId: 'custitem_dynamic_amazon_price',
+                        value: `${Number((newItemOnlinePrice * .12) + newItemOnlinePrice).toFixed(2)}`
+                    });
+                    return;
+                }
+            }
+
+            //Is item going to be part of NS connector?
+            const oldAmazonFlag = oldRecord.getValue({
+                fieldId: 'custitem_nsc_amazon_flag'
             });
 
             //get the online price that was on the record prior
