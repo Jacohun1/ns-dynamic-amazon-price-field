@@ -1,7 +1,3 @@
-Alright, here's the README documentation in the format suitable for GitHub:
-
----
-
 # User Event Script for Item Pricing Update
 
 This script is designed to handle item pricing updates based on specific conditions for a NetSuite record.
