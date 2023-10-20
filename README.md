@@ -1,28 +1,40 @@
-# NetSuite User Event Script: Item Price Adjuster
+Alright, here's the README documentation in the format suitable for GitHub:
 
-This script, designed for the NetSuite ERP platform, leverages the SuiteScript 2.1 API. Its main purpose is to adjust item prices under certain conditions before the record is finalized.
+---
 
-## Details
-- **Author**: Hunter Jacobs, Elcometer Inc.
+# User Event Script for Item Pricing Update
 
-## Features
-- **Price Adjustment**: The script modifies an item's price before the record is saved.
-- Retrieves the online price level (ID of 5) from the price level line.
-- Determines the item manufacturer and its association with the NetSuite connector.
-- Captures the online price set for submission.
-- For newly created items (context.UserEventType.CREATE):
-  - If the manufacturer is "sagola", it sets the 'custitem_dynamic_amazon_price' to the online price.
-  - Otherwise, it increases the online price by 12%.
-- For existing items:
-  - Checks if the online price or the item's connector association hasn't changed. If not, the script terminates.
-  - If the item is not linked with the NetSuite connector, the 'custitem_dynamic_amazon_price' is cleared.
-  - If the manufacturer is "sagola", the new online price is set. Otherwise, it's raised by 12%.
+This script is designed to handle item pricing updates based on specific conditions for a NetSuite record.
 
-## Dependencies
-- `'N/record'`: Offers a range of functions to handle records in NetSuite.
-- `'N/ui/serverWidget'`: Enables server scripts to manipulate forms, sublists, and fields.
+## :sparkles: Features
+1. **Price Calculation**: Calculates the price value based on an item's online price and an upmark percentage.
+2. **Before Submit Handling**: Manages changes to the item record during the `beforeSubmit` event.
 
-## Implementation
-1. Upload this script to your NetSuite account.
-2. Designate it as a User Event Script for inventory and non-inventory item records.
-3. The script will activate during the beforeSubmit event, adjusting the item's price as per the rules mentioned above prior to saving it.
+## :gear: Configuration
+- **NetSuite API Version**: 2.1
+- **Script Type**: User Event Script
+
+## :bust_in_silhouette: Author
+- **Name**: Hunter Jacobs
+- **Affiliation**: Elcometer Inc.
+
+## :package: Dependencies
+- `N/record`
+- `N/log`
+
+## :bulb: How it works
+
+When an item record is submitted, the script:
+1. Fetches the online price and upmark percentage.
+2. Checks if the item is marked for Amazon.
+3. Calculates the new price based on the upmark percentage.
+4. Updates the item's Amazon price if necessary.
+
+## :warning: Error Handling
+The script logs errors in two scenarios:
+1. If the price sublist line is not found.
+2. If there is a general error during the `beforeSubmit` event handling.
+
+---
+
+You can copy and paste this directly into a `README.md` file in your GitHub repository for the script. Adjustments can be made as necessary.
